@@ -4,7 +4,7 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 
 const deps = require('./package.json').dependencies;
 
-module.exports = {
+module.exports = (_, argv) => ({
     entry: "./src/index.tsx",
     devServer: {
         static: path.join(__dirname, "dist"),
@@ -48,7 +48,9 @@ module.exports = {
             name: 'decrease',
             filename: 'remoteEntry.js',
             remotes: {
-                store: "store@http://localhost:3000/remoteEntry.js",
+                store: argv.mode === 'development'
+                    ? 'store@http://localhost:3000/remoteEntry.js'
+                    : 'store@https://react-mf-counter-shell.vercel.app/remoteEntry.js',
             },
             exposes: {
                 './DecreaseButton': './src/components/decreaseButton'
@@ -67,7 +69,10 @@ module.exports = {
     ],
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
+        publicPath:
+            argv.mode === 'development'
+                ? 'http://localhost:3002/'
+                : 'https://react-mf-counter-decrease.vercel.app/',
         library: {type: 'umd'},
     },
-};
+});

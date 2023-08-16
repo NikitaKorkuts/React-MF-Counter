@@ -4,7 +4,7 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 
 const deps = require("./package.json").dependencies;
 
-module.exports = {
+module.exports = (_, argv) => ({
     entry: "./src/index.tsx",
     devServer: {
         static: path.join(__dirname, "dist"),
@@ -48,9 +48,15 @@ module.exports = {
                 "./store": "./src/store/store",
             },
             remotes: {
-                increase: 'increase@http://localhost:3001/remoteEntry.js',
-                decrease: 'decrease@http://localhost:3002/remoteEntry.js',
-                store: 'store@http://localhost:3000/remoteEntry.js',
+                increase: argv.mode === 'development'
+                    ? 'increase@http://localhost:3001/remoteEntry.js'
+                    : 'increase@https://react-mf-counter-increase.vercel.app/remoteEntry.js',
+                decrease: argv.mode === 'development'
+                    ? 'decrease@http://localhost:3002/remoteEntry.js'
+                    : 'decrease@https://react-mf-counter-decrease.vercel.app/remoteEntry.js',
+                store: argv.mode === 'development'
+                    ? 'store@http://localhost:3000/remoteEntry.js'
+                    : 'store@https://react-mf-counter-shell.vercel.app/remoteEntry.js',
             },
             shared: {
                 react: {
@@ -69,6 +75,10 @@ module.exports = {
     ],
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
+        // path: path.resolve(__dirname, 'dist'),
+        publicPath:
+            argv.mode === 'development'
+                ? 'http://localhost:3000/'
+                : 'https://react-mf-counter-shell.vercel.app/',
     },
-};
+});
