@@ -2,13 +2,13 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
-const deps = require("./package.json").dependencies;
+const deps = require('./package.json').dependencies;
 
 module.exports = {
     entry: "./src/index.js",
     devServer: {
         static: path.join(__dirname, "dist"),
-        port: 3000,
+        port: 3002,
     },
     module: {
         rules: [
@@ -32,28 +32,31 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js']
     },
     plugins: [
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, 'src', 'index.html')
+        }),
         new ModuleFederationPlugin({
-            remotes: {
-                increase: "increase@http://localhost:3001/remoteEntry.js",
-                decrease: "decrease@http://localhost:3002/remoteEntry.js"
+            name: 'decrease',
+            library: { type: 'var', name: 'decrease' },
+            filename: 'remoteEntry.js',
+            exposes: {
+                './DecreaseButton': './src/components/decreaseButton'
             },
             shared: {
                 react: {
-                    singleton: true,
                     requiredVersion: deps.react,
-                },
-                "react-dom": {
                     singleton: true,
-                    requiredVersion: deps["react-dom"],
                 },
-            }
-        }),
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'src', 'index.html')
+                'react-dom': {
+                    requiredVersion: deps['react-dom'],
+                    singleton: true,
+                },
+            },
         })
     ],
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
+        library: {type: 'umd'},
     },
 };

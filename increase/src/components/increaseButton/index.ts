@@ -1,0 +1,1 @@
+export { IncreaseButton as default } from './IncreaseButton';
