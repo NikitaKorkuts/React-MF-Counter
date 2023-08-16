@@ -5,7 +5,7 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 const deps = require('./package.json').dependencies;
 
 module.exports = {
-    entry: "./src/index.js",
+    entry: "./src/index.tsx",
     devServer: {
         static: path.join(__dirname, "dist"),
         port: 3001,
@@ -22,9 +22,18 @@ module.exports = {
                 }
             },
             {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
+                test: /\.(ts|js)x?$/,
                 exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: [
+                            "@babel/preset-env",
+                            "@babel/preset-react",
+                            "@babel/preset-typescript",
+                        ],
+                    },
+                },
             },
         ],
     },
@@ -37,8 +46,10 @@ module.exports = {
         }),
         new ModuleFederationPlugin({
             name: 'increase',
-            library: { type: 'var', name: 'increase' },
             filename: 'remoteEntry.js',
+            remotes: {
+                store: "store@http://localhost:3000/remoteEntry.js",
+            },
             exposes: {
                 './IncreaseButton': './src/components/increaseButton'
             },
