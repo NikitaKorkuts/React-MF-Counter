@@ -1,12 +1,16 @@
 import React from 'react'
 import { useAppSelector } from 'store/store';
 
-export const Counter = () => {
-  const { count } = useAppSelector((state) => state.counter);
+import { CounterStyled, BackgroundStyled } from './counter.styles';
 
+
+export const Counter = () => {
+  let { count } = useAppSelector((state) => state.counter);
   return (
-    <div>
-      Count: { count }
-    </div>
+    <BackgroundStyled>
+      <CounterStyled>
+        { count }
+      </CounterStyled>
+    </BackgroundStyled>
   );
 };

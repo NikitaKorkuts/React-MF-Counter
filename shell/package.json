@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve --mode development",
+    "start": "webpack-cli serve --mode=development --open --hot",
     "build": "webpack --mode production"
   },
   "author": "Nikita Korkuts",

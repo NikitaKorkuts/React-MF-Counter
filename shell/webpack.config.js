@@ -75,7 +75,6 @@ module.exports = (_, argv) => ({
     ],
     output: {
         filename: '[name].js',
-        // path: path.resolve(__dirname, 'dist'),
         publicPath:
             argv.mode === 'development'
                 ? 'http://localhost:3000/'

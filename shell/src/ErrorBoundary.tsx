@@ -20,7 +20,7 @@ class ErrorBoundary extends React.Component<TProps, TState> {
 
   render() {
     if (this.state.hasError) {
-      return <h4>Lazy component isn't rendered</h4>;
+      return <h4>Component isn't rendered</h4>;
     }
 
     return this.props.children;

@@ -1,14 +1,16 @@
 import React from 'react';
 import { useActions } from 'store/store';
 
+import { DecreaseButtonStyled } from './decrease.styles'
+
 export const DecreaseButton = () => {
   const { decrease } = useActions();
 
   return (
     <div>
-      <button onClick={() => decrease()}>
-        Decrease
-      </button>
+      <DecreaseButtonStyled onClick={() => decrease()}>
+        -
+      </DecreaseButtonStyled>
     </div>
   );
 };
